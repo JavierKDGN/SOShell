@@ -5,14 +5,14 @@
 #include <sys/wait.h> // para esperar la finalización de procesos hijos (wait)
 
 
-#define comandoMax 1024 //cantidad de caracteres q tendra el comando max
-#define argumentoMax 1024 //cantidad de arg max
-#define pipesMax 100 //cantidad de pipes max
+#define MAX_COMANDOS 1024 //cantidad de caracteres q tendra el comando max
+#define MAX_ARGUMENTOS 1024 //cantidad de arg max
+#define MAX_PIPES 100 //cantidad de pipes max
 
 void ejecutarComando(char *comando); //declaracion de la funcion
 
 int main() {
-    char comando[comandoMax];
+    char comando[MAX_COMANDOS];
     while (1) { // bucle "infinito"
         printf(">shell:$ ");
 
@@ -43,7 +43,7 @@ int main() {
 }
 
 void ejecutarComando(char *comando) {
-    char *comandos[pipesMax + 1]; //n+1, porque para pipes usamos n+1 division de comandos, si tenemos dos pipes hay 3 comandos entre ellos
+    char *comandos[MAX_PIPES + 1]; //n+1, porque para pipes usamos n+1 division de comandos, si tenemos dos pipes hay 3 comandos entre ellos
     char *comandoActual; 
     int numPipes = 0;
     int i;
@@ -52,7 +52,7 @@ void ejecutarComando(char *comando) {
     comandos[numPipes] = strtok(comando, "|"); // encontrtamos el primer comando del pipe y lo guardamos
     while (comandos[numPipes] != NULL) { //mientras tengamos elementos en la lista de comandos
         numPipes++; //aumentamos num de pipes
-        if (numPipes > pipesMax) { //si el numero de pipes supera el maximo que asignamos
+        if (numPipes > MAX_PIPES) { //si el numero de pipes supera el maximo que asignamos
             fprintf(stderr, "Error: supera la cantidad de pipes\n"); //damos error
             error = 1;//marcamos error como 1, true, asi que debemos terminar la funcion
             break;
@@ -81,7 +81,7 @@ void ejecutarComando(char *comando) {
             close(fd[0]); //cerramos el descriptor de lectura
 
             // dividir el comando por argumentos
-            char *argumentos[argumentoMax]; //un arreglo para almacenar los argumentos con tamaño argumentoMax
+            char *argumentos[MAX_ARGUMENTOS]; //un arreglo para almacenar los argumentos con tamaño MAX_ARGUMENTOS
             char *argumento = strtok(comandos[i], " ");//usamos el espacio para dividir los argumentps
             int indiceArgumento = 0; //aqui iremos viendo el indice de los argumentos
             while (argumento != NULL) { //mientras el argumento no sea nulo
