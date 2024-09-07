@@ -10,10 +10,10 @@
 
 typedef enum {
     crear,
-    mostrar,
-    eliminar,
-    buscar,
-    borrar,
+    mostrar, //Listo
+    eliminar, //Listo
+    buscar, 
+    borrar, //Listo
     ejecutar,
     cargar,
     guardar
@@ -57,3 +57,30 @@ void mostrarFavs(ComFavorito *favs, size_t *num_favs) {
         printf("%d: %s\n", favs[i].id, favs[i].comando);
     }
 }
+
+void eliminarParFavs(ComFavorito *favs, int id1, int id2) {
+    int dif_abs = (id1 - id2) * (((id1 - id2) > 0) - (id1 - id2) < 0); //algoritmo para sacar el valor absoluto
+    int menor;
+    if (id1 > id2) {
+        menor = id1;
+    } else menor = id2;
+
+    int i = 0;
+    for (i = menor; i <= menor + dif_abs; i++) {
+        favs[i].eliminado = true;
+    }
+
+}
+
+void borrarFavs(ComFavorito **favs, int *num_favs) {
+    ComFavorito *new_favs = malloc(sizeof(ComFavorito) * MAX_FAVS);;
+    if (new_favs == NULL) {
+        fprintf(stderr, "Error: No se pudo asignar memoria para los nuevos favoritos.\n");
+        return;
+    }
+    free(*favs);
+    favs = new_favs;
+    *num_favs = 0;
+}
+
+
