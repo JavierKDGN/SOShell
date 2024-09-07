@@ -5,8 +5,8 @@
 #include <sys/wait.h> // para esperar la finalización de procesos hijos (wait)
 
 
-#define comandoMax 1000 //cantidad de caracteres q tendra el comando max
-#define argumentoMax 1000 //cantidad de arg max
+#define comandoMax 1024 //cantidad de caracteres q tendra el comando max
+#define argumentoMax 1024 //cantidad de arg max
 #define pipesMax 100 //cantidad de pipes max
 
 void ejecutarComando(char *comando); //declaracion de la funcion
