@@ -2,29 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
-
-//FALTA MOVER MACROS Y DEFINICIONES A HEADER
-
-#define MAX_FAVS 1024
-#define MAX_COMANDOS 1024
-
-typedef enum {
-    crear, //Listo
-    mostrar, //Listo
-    eliminar, //Listo
-    buscar, 
-    borrar, //Listo
-    ejecutar,
-    cargar,
-    guardar
-} argumentos_favs;
-
-//Struct que define un comando preferido
-typedef struct {
-    char comando[MAX_COMANDOS];
-    int id;
-    bool eliminado;
-} ComFavorito;
+#include "favs.h"
 
 bool estaEnFavs(ComFavorito *favs, int *num_favs, const char *comando) {
     for (int i = 0; i < *num_favs; i++) {
@@ -113,7 +91,7 @@ void crearArchivoFavs(const char *ruta) {
     id comando \n
 */
 
-void guardarFavs(ComFavorito *favs, int num_favs) {
+void guardarFavs(ComFavorito *favs, int *num_favs) {
     FILE *aux_data = fopen("shell_data.txt", "r");
     if (aux_data == NULL) {
         fprintf(stderr, "Error: no se pudo abrir archivo\n");
@@ -135,7 +113,7 @@ void guardarFavs(ComFavorito *favs, int num_favs) {
         return;
     }
 
-    for (int i = 0; i < num_favs; i++) {
+    for (int i = 0; i < *num_favs; i++) {
         if (!favs[i].eliminado) {
             fprintf(arch, "%d %s\n", favs[i].id, favs[i].comando);  // Guardamos el id y el comando en el formato establecido
         }
@@ -184,46 +162,4 @@ void cargarFavs(ComFavorito *favs, int *num_favs) {
 
     fclose(arch);
     mostrarFavs(favs, num_favs);
-}
-
-//Nuevo test creado por copilot :Commit actual funciona bien
-void testCrearGuardarCargar() {
-    ComFavorito *favs = malloc(sizeof(ComFavorito) * MAX_FAVS);
-    if (favs == NULL) {
-        fprintf(stderr, "Error: No se pudo asignar memoria para los favoritos.\n");
-        return;
-    }
-    int num_favs = 0;
-
-    // Crear favoritos
-    addFav(favs, &num_favs, "comando1");
-    addFav(favs, &num_favs, "comando2");
-    addFav(favs, &num_favs, "comando3");
-
-    //Buscar comando1
-    buscarStringEnFavs(favs, &num_favs, "1");
-
-    // Guardar favoritos
-    const char *filename = "favs.txt";
-    crearArchivoFavs(filename);
-
-    guardarFavs(favs, num_favs);
-
-    // Borrar favoritos
-    borrarFavs(&favs, &num_favs);
-
-    // Cargar favoritos
-    cargarFavs(favs, &num_favs);
-
-    // Mostrar favoritos cargados
-    printf("Lista de favoritos cargados:\n");
-    mostrarFavs(favs, &num_favs);
-
-    // Clean up
-    free(favs);
-}
-
-int main() {
-    testCrearGuardarCargar();
-    return 0;
 }
