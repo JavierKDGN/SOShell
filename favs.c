@@ -42,7 +42,7 @@ void addFav(ComFavorito *favs, int *num_favs, const char *comando) {
         return;
     }
 
-    if (!estaEnFavs(favs, num_favs, comando)) { //FALTA IMPLEMENTAR
+    if (!estaEnFavs(favs, num_favs, comando)) {
         favs[*num_favs].id = *num_favs + 1; //agrega a favs el id nuevo
         strncpy(favs[*num_favs].comando, comando, MAX_COMANDOS - 1); //asigna a ese id el comando ingresado
         favs[*num_favs].comando[MAX_COMANDOS - 1] = '\0'; // pone el caracter para terminar la string
@@ -61,22 +61,8 @@ void mostrarFavs(ComFavorito *favs, int *num_favs) {
     }
 }
 
-void eliminarParFavs(ComFavorito *favs, int id1, int id2) {
-    int dif_abs = (id1 - id2) * (((id1 - id2) > 0) - (id1 - id2) < 0); //algoritmo para sacar el valor absoluto
-    int menor;
-    if (id1 < id2) {
-        menor = id1;
-    } else menor = id2;
-
-    int i = 0;
-    for (i = menor - 1; i <= menor + dif_abs; i++) {
-        favs[i].eliminado = true;
-    }
-
-}
-
 void borrarFavs(ComFavorito **favs, int *num_favs) {
-    ComFavorito *new_favs = malloc(sizeof(ComFavorito) * MAX_FAVS);;
+    ComFavorito *new_favs = malloc(sizeof(ComFavorito) * MAX_FAVS);
     if (new_favs == NULL) {
         fprintf(stderr, "Error: No se pudo asignar memoria para los nuevos favoritos.\n");
         return;
@@ -92,11 +78,10 @@ void crearArchivoFavs(const char *ruta) {
         fprintf(stderr, "Error: no se pudo crear archivo\n");
         return;
     }
-
     fclose(arch);
     printf("Archivo creado en: %s\n", ruta);
 
-    FILE *aux_data = fopen("shell_data.txt", "w"); //Archivo auxiliar para recordar ruta
+    FILE *aux_data = fopen("shell_data.txt", "w"); // Archivo auxiliar para recordar ruta
     if (aux_data == NULL) {
         fprintf(stderr, "Error: no se pudo crear archivo\n");
         return;
@@ -109,22 +94,50 @@ void crearArchivoFavs(const char *ruta) {
     id comando \n
 */
 
-void guardarFavs(ComFavorito *favs, int num_favs) {}
-
-void cargarFavs(ComFavorito *favs, int *num_favs) {
-    FILE *aux_data = fopen("shell_data,txt", "r");
+void guardarFavs(ComFavorito *favs, int num_favs) {
+    FILE *aux_data = fopen("shell_data.txt", "r");
     if (aux_data == NULL) {
         fprintf(stderr, "Error: no se pudo abrir archivo\n");
         return;
     }
 
-    const char ruta[1024]; //variable para leer ruta guardada
-
+    char ruta[1024]; // Variable para leer ruta guardada
     if (fgets(ruta, sizeof(ruta), aux_data) == NULL) {
         fprintf(stderr, "Error: No se ha detectado una ruta, cree una con el comando 'favs crear'\n");
         fclose(aux_data);
         return;
     }
+    ruta[strcspn(ruta, "\n")] = 0; // Elimina el salto de línea
+    fclose(aux_data);
+
+    FILE *arch = fopen(ruta, "w");
+    if (arch == NULL) {
+        fprintf(stderr, "Error: no se pudo abrir archivo\n");
+        return;
+    }
+
+    for (int i = 0; i < num_favs; i++) {
+        if (!favs[i].eliminado) {
+            fprintf(arch, "%d %s\n", favs[i].id, favs[i].comando);  // Guardamos el id y el comando en el formato establecido
+        }
+    }
+    fclose(arch);
+}
+
+void cargarFavs(ComFavorito *favs, int *num_favs) {
+    FILE *aux_data = fopen("shell_data.txt", "r");
+    if (aux_data == NULL) {
+        fprintf(stderr, "Error: no se pudo abrir archivo\n");
+        return;
+    }
+
+    char ruta[1024]; // Variable para leer ruta guardada
+    if (fgets(ruta, sizeof(ruta), aux_data) == NULL) {
+        fprintf(stderr, "Error: No se ha detectado una ruta, cree una con el comando 'favs crear'\n");
+        fclose(aux_data);
+        return;
+    }
+    ruta[strcspn(ruta, "\n")] = 0; // Elimina el salto de línea
     fclose(aux_data);
 
     FILE *arch = fopen(ruta, "r");
@@ -137,61 +150,58 @@ void cargarFavs(ComFavorito *favs, int *num_favs) {
     char comando[MAX_COMANDOS];
     int id;
 
-    //el fscanf lee cada linea
-    while (fscanf(arch, "%d %[^\n]s, &id, comando") != EOF) {
+    // fscanf lee cada línea
+    while (fscanf(arch, "%d %[^\n]s", &id, comando) != EOF) {
         if (*num_favs >= MAX_FAVS) {
-            fprintf(stderr, "Error: No se pudo cargar favoritos");
+            fprintf(stderr, "Error: No se pudo cargar favoritos\n");
             return;
-        } else {
-            favs[*num_favs].id = id;
-            strncpy(favs[*num_favs].comando, comando, MAX_COMANDOS - 1);
-            favs[*num_favs].comando[MAX_COMANDOS - 1] = '\0';
-            favs[*num_favs].eliminado = false;
-            (*num_favs)++;
         }
+        favs[*num_favs].id = id;
+        strncpy(favs[*num_favs].comando, comando, MAX_COMANDOS - 1);
+        favs[*num_favs].comando[MAX_COMANDOS - 1] = '\0';
+        favs[*num_favs].eliminado = false;
+        (*num_favs)++;
     }
 
     fclose(arch);
     mostrarFavs(favs, num_favs);
 }
 
-
-
-/* TEST GENERADO POR COPILOT, EN LA COMMIT ACTUAL FUNCIONA CORRECTAMENTE
-int main() {
-    // Allocate memory for favorites
+//Nuevo test creado por copilot :Commit actual funciona bien
+void testCrearGuardarCargar() {
     ComFavorito *favs = malloc(sizeof(ComFavorito) * MAX_FAVS);
     if (favs == NULL) {
         fprintf(stderr, "Error: No se pudo asignar memoria para los favoritos.\n");
-        return 1;
+        return;
     }
     int num_favs = 0;
 
-    // Add some favorites
+    // Crear favoritos
     addFav(favs, &num_favs, "comando1");
     addFav(favs, &num_favs, "comando2");
     addFav(favs, &num_favs, "comando3");
 
-    // Show favorites
-    printf("Lista de favoritos:\n");
+    // Guardar favoritos
+    const char *filename = "favs.txt";
+    crearArchivoFavs(filename);
+
+    guardarFavs(favs, num_favs);
+
+    // Borrar favoritos
+    borrarFavs(&favs, &num_favs);
+
+    // Cargar favoritos
+    cargarFavs(favs, &num_favs);
+
+    // Mostrar favoritos cargados
+    printf("Lista de favoritos cargados:\n");
     mostrarFavs(favs, &num_favs);
-
-    // Check if a command is in favorites
-    const char *comando = "comando2";
-    if (estaEnFavs(favs, &num_favs, comando)) {
-        printf("El comando '%s' está en la lista de favoritos.\n", comando);
-    } else {
-        printf("El comando '%s' no está en la lista de favoritos.\n", comando);
-    }
-
-    // Clear favorites
-    eliminarParFavs(favs,2,3);
-    mostrarFavs(favs,&num_favs);
 
     // Clean up
     free(favs);
-
-    return 0;
 }
 
-*/
+int main() {
+    testCrearGuardarCargar();
+    return 0;
+}
