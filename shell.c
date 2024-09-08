@@ -6,8 +6,6 @@
 #include "shell.h"
 #include "favs.h"
 
-
-
 void ejecutarComando(char *comando) {
     char *comandos[MAX_PIPES + 1]; //n+1, porque para pipes usamos n+1 division de comandos, si tenemos dos pipes hay 3 comandos entre ellos
     char *comandoActual; 

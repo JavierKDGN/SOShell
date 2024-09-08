@@ -21,13 +21,17 @@ typedef enum {
     borrar, //Listo
     ejecutar,
     cargar, //Listo
-    guardar //Listo
+    guardar, //Listo
+    undefined //Comando no reconodio
 } argumentos_favs;
 
 //Prototipos de funciones
+argumentos_favs obtenerArgumento(const char *argumento);
+void procesarFavs(ComFavorito *favs, int *num_favs, const char *comando);
 bool estaEnFavs(ComFavorito *favs, int *num_favs, const char *comando);
 void addFav(ComFavorito *favs, int *num_favs, const char *comando);
 void mostrarFavs(ComFavorito *favs, int *num_favs);
+void buscarStringEnFavs(ComFavorito *favs, int *num_favs, const char* str);
 void borrarFavs(ComFavorito **favs, int *num_favs);
 void crearArchivoFavs(const char *ruta);
 void guardarFavs(ComFavorito *favs, int *num_favs);

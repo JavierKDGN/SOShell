@@ -1,9 +1,13 @@
 #include "shell.h"
+#include "favs.h"
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
+#include <stdlib.h>
 
 int main(void) {
+    ComFavorito *favs = malloc(sizeof(ComFavorito) * MAX_FAVS);
+    int num_favs = 0;
     char comando[MAX_COMANDOS];
     while (1) { // bucle "infinito"
         printf(">shell:$ ");
@@ -11,16 +15,21 @@ int main(void) {
         // leer el comando del usuario
         if (fgets(comando, sizeof(comando), stdin) != NULL) {
             // eliminar el salto de linea final
-            comando[strcspn(comando, "\n")] = 0;
+            comando[strcspn(comando, "\n")] = '\0';
 
             if (strcmp(comando, "exit") == 0) {
+                guardarFavs(favs, &num_favs);
                 break; // Si el comando es "exit", salir del bucle
             } 
             else if (strlen(comando) == 0) {
                 continue; // s no hay comando, seguir esperando el siguiente comando
             } 
+            else if (strncmp(comando, "favs", 4) == 0)  { //Si el comando empieza con favs
+                procesarFavs(favs, &num_favs, comando);
+            }
             // ejecutar el comando
             else {
+                addFav(favs, &num_favs, comando);
                 ejecutarComando(comando);
             }
         } else {

@@ -4,6 +4,87 @@
 #include <stdbool.h>
 #include "favs.h"
 
+argumentos_favs obtenerArgumento(const char *argumento) {
+    if (strcmp(argumento, "crear") == 0) return crear;
+    else if (strcmp(argumento, "mostrar") == 0) return mostrar;
+    else if (strcmp(argumento, "eliminar") == 0) return eliminar;
+    else if (strcmp(argumento, "buscar") == 0) return buscar;
+    else if (strcmp(argumento, "borrar") == 0) return borrar;
+    else if (strcmp(argumento, "ejecutar") == 0) return ejecutar;
+    else if (strcmp(argumento, "cargar") == 0) return cargar;
+    else if (strcmp(argumento, "guardar") == 0) return guardar;
+    else return undefined;
+}
+
+void procesarFavs(ComFavorito *favs, int *num_favs, const char *comando) {
+    char *args = strtok((char *)comando, " "); // Primer llamado a strtok para "favs"
+    
+    // Avanzar al siguiente token (el argumento dsps de "favs")
+    args = strtok(NULL, " ");
+    
+    if (args == NULL) {
+        fprintf(stderr, "Error: Faltan argumentos de favs\n");
+        return;
+    }
+
+    argumentos_favs argumento = obtenerArgumento(args);
+
+    switch (argumento) {
+        case crear: {
+            char *ruta = strtok(NULL, " "); // obtener el siguiente argumento
+            if (ruta == NULL) {
+                fprintf(stderr, "Error: No se ha proporcionado una ruta para crear archivo\n");
+            } else {
+                crearArchivoFavs(ruta); // Llamada a funcion de creacion de archivo
+            }
+            break;
+        }
+        case mostrar:
+            mostrarFavs(favs, num_favs);
+            break;
+
+        case eliminar: {
+            char *nums = strtok(NULL, " "); // numeros de favoritos a eliminar
+            if (nums != NULL) {
+                // Parsear los numeros y llamar a eliminar
+            } else {
+                fprintf(stderr, "Error: Debe proporcionar números de favoritos para eliminar\n");
+            }
+            break;
+        }
+
+        case buscar: {
+            char *cmd = strtok(NULL, " ");
+            if (cmd != NULL) {
+                buscarStringEnFavs(favs, num_favs, cmd);
+            } else {
+                fprintf(stderr, "Error: Debe proporcionar un comando para buscar\n");
+            }
+            break;
+        }
+
+        case borrar:
+            borrarFavs(&favs, num_favs);
+            break;
+
+        case ejecutar:
+            break;
+
+        case cargar:
+            cargarFavs(favs, num_favs);
+            break;
+
+        case guardar:
+            guardarFavs(favs, num_favs);
+            break;
+
+        default:
+            fprintf(stderr, "Error: argumento desconocido para favs\n");
+            break;
+    }
+}
+
+
 bool estaEnFavs(ComFavorito *favs, int *num_favs, const char *comando) {
     for (int i = 0; i < *num_favs; i++) {
         if (strcmp(favs[i].comando, comando) == 0) {
@@ -44,7 +125,11 @@ void buscarStringEnFavs(ComFavorito *favs, int *num_favs, const char* str) {
     int num_coincidentes = 0;
     for (int i = 0; i < *num_favs; i++) {
         if (strstr(favs[i].comando, str) != NULL) { //Busca la palabra str en el comando
-            addFav(coincidentes, &num_coincidentes, favs[i].comando);
+            coincidentes[num_coincidentes].id = favs[i].id;
+            strncpy(coincidentes[num_coincidentes].comando, favs[i].comando, MAX_COMANDOS - 1);
+            coincidentes[num_coincidentes].comando[MAX_COMANDOS - 1] = '\0';
+            coincidentes[num_coincidentes].eliminado = false;
+            num_coincidentes++;
         }
     }
 
