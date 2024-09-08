@@ -1,11 +1,10 @@
 #ifndef FAVS_H
 #define FAVS_H
 
-#include <stddef.h>
 #include <stdbool.h>
+#include "shell.h"
 
 #define MAX_FAVS 1024
-#define MAX_COMANDOS 1024
 
 // Struct que define un comando preferido
 typedef struct {
