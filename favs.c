@@ -61,6 +61,25 @@ void mostrarFavs(ComFavorito *favs, int *num_favs) {
     }
 }
 
+void buscarStringEnFavs(ComFavorito *favs, int *num_favs, const char* str) {
+    ComFavorito *coincidentes = malloc(sizeof(ComFavorito) * MAX_FAVS);
+    int num_coincidentes = 0;
+    for (int i = 0; i < *num_favs; i++) {
+        if (strstr(favs[i].comando, str) != NULL) { //Busca la palabra str en el comando
+            addFav(coincidentes, &num_coincidentes, favs[i].comando);
+        }
+    }
+
+    if (num_coincidentes > 0) {
+        mostrarFavs(coincidentes, &num_coincidentes);
+    } else {
+        printf("No se encontraron favoritos que contengan la palabra '%s'\n", str);
+    }
+
+} 
+
+
+
 void borrarFavs(ComFavorito **favs, int *num_favs) {
     ComFavorito *new_favs = malloc(sizeof(ComFavorito) * MAX_FAVS);
     if (new_favs == NULL) {
@@ -180,6 +199,9 @@ void testCrearGuardarCargar() {
     addFav(favs, &num_favs, "comando1");
     addFav(favs, &num_favs, "comando2");
     addFav(favs, &num_favs, "comando3");
+
+    //Buscar comando1
+    buscarStringEnFavs(favs, &num_favs, "1");
 
     // Guardar favoritos
     const char *filename = "favs.txt";
