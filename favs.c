@@ -9,7 +9,7 @@
 #define MAX_COMANDOS 1024
 
 typedef enum {
-    crear,
+    crear, //Listo
     mostrar, //Listo
     eliminar, //Listo
     buscar, 
@@ -85,6 +85,76 @@ void borrarFavs(ComFavorito **favs, int *num_favs) {
     *favs = new_favs;
     *num_favs = 0;
 }
+
+void crearArchivoFavs(const char *ruta) {
+    FILE *arch = fopen(ruta, "w");
+    if (arch == NULL) {
+        fprintf(stderr, "Error: no se pudo crear archivo\n");
+        return;
+    }
+
+    fclose(arch);
+    printf("Archivo creado en: %s\n", ruta);
+
+    FILE *aux_data = fopen("shell_data.txt", "w"); //Archivo auxiliar para recordar ruta
+    if (aux_data == NULL) {
+        fprintf(stderr, "Error: no se pudo crear archivo\n");
+        return;
+    }
+    fprintf(aux_data, "%s", ruta);
+    fclose(aux_data);
+}
+
+/*FORMATO PARA GUARDAR FAVS:
+    id comando \n
+*/
+
+void guardarFavs(ComFavorito *favs, int num_favs) {}
+
+void cargarFavs(ComFavorito *favs, int *num_favs) {
+    FILE *aux_data = fopen("shell_data,txt", "r");
+    if (aux_data == NULL) {
+        fprintf(stderr, "Error: no se pudo abrir archivo\n");
+        return;
+    }
+
+    const char ruta[1024]; //variable para leer ruta guardada
+
+    if (fgets(ruta, sizeof(ruta), aux_data) == NULL) {
+        fprintf(stderr, "Error: No se ha detectado una ruta, cree una con el comando 'favs crear'\n");
+        fclose(aux_data);
+        return;
+    }
+    fclose(aux_data);
+
+    FILE *arch = fopen(ruta, "r");
+    if (arch == NULL) {
+        fprintf(stderr, "Error: no se pudo abrir archivo\n");
+        return;
+    }
+    
+    *num_favs = 0;
+    char comando[MAX_COMANDOS];
+    int id;
+
+    //el fscanf lee cada linea
+    while (fscanf(arch, "%d %[^\n]s, &id, comando") != EOF) {
+        if (*num_favs >= MAX_FAVS) {
+            fprintf(stderr, "Error: No se pudo cargar favoritos");
+            return;
+        } else {
+            favs[*num_favs].id = id;
+            strncpy(favs[*num_favs].comando, comando, MAX_COMANDOS - 1);
+            favs[*num_favs].comando[MAX_COMANDOS - 1] = '\0';
+            favs[*num_favs].eliminado = false;
+            (*num_favs)++;
+        }
+    }
+
+    fclose(arch);
+    mostrarFavs(favs, num_favs);
+}
+
 
 
 /* TEST GENERADO POR COPILOT, EN LA COMMIT ACTUAL FUNCIONA CORRECTAMENTE
