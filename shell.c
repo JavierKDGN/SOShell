@@ -6,7 +6,7 @@
 #include "shell.h"
 #include "favs.h"
 
-void ejecutarComando(char *comando) {
+int ejecutarComando(char *comando) {
     char *comandos[MAX_PIPES + 1]; //n+1, porque para pipes usamos n+1 division de comandos, si tenemos dos pipes hay 3 comandos entre ellos
     char *comandoActual; 
     int numPipes = 0;
@@ -26,7 +26,7 @@ void ejecutarComando(char *comando) {
 
     if (error == 1)
     {
-        return; //se sale de la funcion
+        return -1; //se sale de la funcion
     }
     
     int fd[2]; //fd, file desvcriptor almacenara dos valores, 0 y 1, pues fd[0] lectura y fd[1] escritura
@@ -59,13 +59,19 @@ void ejecutarComando(char *comando) {
             perror("execvp error");
             exit(EXIT_FAILURE);
         } else if (pid > 0) {
-            // Proceso padre
-            wait(NULL);
+            int status;
+            waitpid(pid, &status, 0);  // Espera al proceso hijo y guarda el estado
+            if (WIFEXITED(status) && WEXITSTATUS(status) != 0) {
+                // Si el hijo terminó con error, devolver -1
+                return -1;
+            }
             close(fd[1]);
-            entrada = fd[0]; // La entrada para el próximo comando es la salida del comando anterior
+            entrada = fd[0];
         } else {
             perror("fork error");
             exit(EXIT_FAILURE);
         }
     }
+
+    return 0;
 }

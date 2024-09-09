@@ -29,8 +29,9 @@ int main(void) {
             }
             // ejecutar el comando
             else {
+                if (ejecutarComando(comando) == 0) {
                 addFav(favs, &num_favs, comando);
-                ejecutarComando(comando);
+                }
             }
         } else {
             // Si hay un error al leer el comando
