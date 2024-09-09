@@ -119,11 +119,10 @@ void addFav(ComFavorito *favs, int *num_favs, const char *comando) {
 }
 
 void mostrarFavs(ComFavorito *favs, int *num_favs) {
+    int aux = 1;
     for (int i = 0; i < *num_favs; i++) {
-        if (favs[i].eliminado == true) {
-            continue;
-        } else {
-            printf("%d: %s\n", favs[i].id, favs[i].comando);
+        if (favs[i].eliminado == false) { //Mostrar solo si no esta eliminado
+            printf("%d: %s\n", aux++, favs[i].comando);
         }
     }
 }
@@ -149,6 +148,18 @@ void buscarStringEnFavs(ComFavorito *favs, int *num_favs, const char* str) {
 
 } 
 
+//Funcion para reordenar favs despues de eliminar
+void renumerarFavs(ComFavorito *favs, int *numFavs) {
+    int index = 0;
+    for (int i = 0; i < *numFavs; i++) {
+        if (!favs[i].eliminado) {
+            favs[index] = favs[i];
+            index++;
+        }
+    }
+    *numFavs = index;  // Actualizamos el numero de favoritos
+}
+
 void eliminarParFavs(ComFavorito *favs, int *num_favs, int id1, int id2) {
     int dif_abs = abs(id1 - id2); //algoritmo para sacar el valor absoluto
     int menor = (id1 < id2) ? id1 : id2;
@@ -158,9 +169,10 @@ void eliminarParFavs(ComFavorito *favs, int *num_favs, int id1, int id2) {
         return;
     }
 
-    for (int i = menor - 1; i <= menor + dif_abs; i++) {
+    for (int i = menor - 1; i <= menor + dif_abs - 1; i++) {
         favs[i].eliminado = true;
     }
+    renumerarFavs(favs, num_favs);
 
 }
 
