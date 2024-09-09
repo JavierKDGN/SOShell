@@ -51,7 +51,7 @@ void procesarFavs(ComFavorito *favs, int *num_favs, const char *comando) {
                 char *id2 = strtok(NULL, ",");
 
                 if (id1 != NULL && id2 != NULL) {
-                    eliminarParFavs(favs, atoi(id1), atoi(id2));
+                    eliminarParFavs(favs, &num_favs,atoi(id1), atoi(id2));
                 }
 
             } else {
@@ -149,12 +149,16 @@ void buscarStringEnFavs(ComFavorito *favs, int *num_favs, const char* str) {
 
 } 
 
-void eliminarParFavs(ComFavorito *favs, int id1, int id2) {
+void eliminarParFavs(ComFavorito *favs, int *num_favs, int id1, int id2) {
     int dif_abs = abs(id1 - id2); //algoritmo para sacar el valor absoluto
     int menor = (id1 < id2) ? id1 : id2;
 
-    int i = 0;
-    for (i = menor - 1; i <= menor + dif_abs; i++) {
+    if (menor < 1 || menor > *num_favs || menor + dif_abs > *num_favs) {
+        fprintf(stderr, "Error: IDs fuera de rango\n");
+        return;
+    }
+
+    for (int i = menor - 1; i <= menor + dif_abs; i++) {
         favs[i].eliminado = true;
     }
 

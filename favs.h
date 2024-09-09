@@ -32,7 +32,7 @@ bool estaEnFavs(ComFavorito *favs, int *num_favs, const char *comando);
 void addFav(ComFavorito *favs, int *num_favs, const char *comando);
 void mostrarFavs(ComFavorito *favs, int *num_favs);
 void buscarStringEnFavs(ComFavorito *favs, int *num_favs, const char* str);
-void eliminarParFavs(ComFavorito *favs, int id1, int id2);
+void eliminarParFavs(ComFavorito *favs, int *num_favs, int id1, int id2);
 void borrarFavs(ComFavorito **favs, int *num_favs);
 void crearArchivoFavs(const char *ruta);
 void guardarFavs(ComFavorito *favs, int *num_favs);
