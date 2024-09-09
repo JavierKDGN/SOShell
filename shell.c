@@ -75,3 +75,35 @@ int ejecutarComando(char *comando) {
 
     return 0;
 }
+
+void crearRecordatorio(char *comando) {
+    char *args[MAX_ARGUMENTOS]; //buffer de argumentos
+    char *aux_token = strtok(comando, " "); //separa comando en sus argumentos
+    int aux_contador = 0;
+
+    while (aux_token != NULL && aux_contador < MAX_ARGUMENTOS - 1) {
+        args[aux_contador++] = aux_token;
+        aux_token = strtok(NULL, " ");
+    }
+    args[aux_contador] = NULL; //fijamos la ultima palabra de args como null
+
+    if (aux_contador < 4) {
+        //Formato: set recordatorio segundos "mensaje"
+        fprintf(stderr, "Error: debe incluir un numero y un mensaje despues de set recordatorio\n");
+        return;
+    }
+    int segundos = atoi(args[2]);
+    const char *mensaje = args[3];
+
+    //terminamos de parsear el comando
+    pid_t pid = fork();
+    if (pid == 0) {
+        sleep(segundos);
+        printf("\n Recordatorio: %s\n", mensaje);
+        exit(0); //cerramos el hijo encaragdo del recordatorio
+    } else if (pid < 0) {
+        perror("fork error");
+    }
+
+
+}

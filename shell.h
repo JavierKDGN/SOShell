@@ -6,6 +6,6 @@
 #define MAX_COMANDOS 1024
 
 int ejecutarComando(char *comando); //declaracion de la funcion
-
+void crearRecordatorio(char *comando);
 
 #endif
