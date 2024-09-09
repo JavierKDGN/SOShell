@@ -35,6 +35,7 @@ void buscarStringEnFavs(ComFavorito *favs, int *num_favs, const char* str);
 void renumerarFavs(ComFavorito *favs, int *numFavs);
 void eliminarParFavs(ComFavorito *favs, int *num_favs, int id1, int id2);
 void borrarFavs(ComFavorito **favs, int *num_favs);
+void ejecutarFavs(ComFavorito *favs, int id);
 void crearArchivoFavs(const char *ruta);
 void guardarFavs(ComFavorito *favs, int *num_favs);
 void cargarFavs(ComFavorito *favs, int *num_favs);

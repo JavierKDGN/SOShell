@@ -74,7 +74,14 @@ void procesarFavs(ComFavorito *favs, int *num_favs, const char *comando) {
             borrarFavs(&favs, num_favs);
             break;
 
-        case ejecutar: { 
+        case ejecutar: {
+            char *id_comando = strtok(NULL, " ");
+            if (id_comando == NULL) {
+                fprintf(stderr, "Error: numero de comando no valido\n");
+            } else {
+                int aux = atoi(id_comando);
+                ejecutarFavs(favs, aux);
+            }
             break;
         }
 
@@ -91,7 +98,6 @@ void procesarFavs(ComFavorito *favs, int *num_favs, const char *comando) {
             break;
     }
 }
-
 
 bool estaEnFavs(ComFavorito *favs, int *num_favs, const char *comando) {
     for (int i = 0; i < *num_favs; i++) {
@@ -185,6 +191,21 @@ void borrarFavs(ComFavorito **favs, int *num_favs) {
     free(*favs);
     *favs = new_favs;
     *num_favs = 0;
+}
+
+void ejecutarFavs(ComFavorito *favs, int id) {
+    if (id < 1 || id > MAX_FAVS || favs[id-1].eliminado == true) {
+        fprintf(stderr, "Error: Comando ingresado no existe\n");
+        return;
+    }
+
+    char *comando = favs[id - 1].comando;
+
+    if (comando == NULL) {
+        fprintf(stderr, "Error: Comando no valido");
+    } else {
+        ejecutarComando(comando);
+    }
 }
 
 void crearArchivoFavs(const char *ruta) {
