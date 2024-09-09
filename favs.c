@@ -51,7 +51,7 @@ void procesarFavs(ComFavorito *favs, int *num_favs, const char *comando) {
                 char *id2 = strtok(NULL, ",");
 
                 if (id1 != NULL && id2 != NULL) {
-                    eliminarParFavs(favs, &num_favs,atoi(id1), atoi(id2));
+                    eliminarParFavs(favs, num_favs,atoi(id1), atoi(id2));
                 }
 
             } else {
