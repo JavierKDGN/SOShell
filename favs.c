@@ -205,6 +205,8 @@ void crearArchivoFavs(const char *ruta) {
     fclose(aux_data);
 }
 
+
+
 /*FORMATO PARA GUARDAR FAVS:
     id comando \n
 */
@@ -231,9 +233,11 @@ void guardarFavs(ComFavorito *favs, int *num_favs) {
         return;
     }
 
+    int id_aux = 1;
     for (int i = 0; i < *num_favs; i++) {
         if (!favs[i].eliminado) {
-            fprintf(arch, "%d %s\n", favs[i].id, favs[i].comando);  // Guardamos el id y el comando en el formato establecido
+            fprintf(arch, "%d %s\n", id_aux, favs[i].comando);  // Guardamos el id y el comando en el formato establecido
+            id_aux++;
         }
     }
     fclose(arch);
