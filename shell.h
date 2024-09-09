@@ -5,7 +5,7 @@
 #define MAX_PIPES 100 //cantidad de pipes max
 #define MAX_COMANDOS 1024
 
-void ejecutarComando(char *comando); //declaracion de la funcion
+int ejecutarComando(char *comando); //declaracion de la funcion
 
 
 #endif
