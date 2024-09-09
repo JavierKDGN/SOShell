@@ -47,6 +47,13 @@ void procesarFavs(ComFavorito *favs, int *num_favs, const char *comando) {
             char *nums = strtok(NULL, " "); // numeros de favoritos a eliminar
             if (nums != NULL) {
                 // Parsear los numeros y llamar a eliminar
+                char *id1 = strtok(nums, ",");
+                char *id2 = strtok(NULL, ",");
+
+                if (id1 != NULL && id2 != NULL) {
+                    eliminarParFavs(favs, atoi(id1), atoi(id2));
+                }
+
             } else {
                 fprintf(stderr, "Error: Debe proporcionar números de favoritos para eliminar\n");
             }
@@ -67,8 +74,9 @@ void procesarFavs(ComFavorito *favs, int *num_favs, const char *comando) {
             borrarFavs(&favs, num_favs);
             break;
 
-        case ejecutar:
+        case ejecutar: { 
             break;
+        }
 
         case cargar:
             cargarFavs(favs, num_favs);
@@ -141,7 +149,16 @@ void buscarStringEnFavs(ComFavorito *favs, int *num_favs, const char* str) {
 
 } 
 
+void eliminarParFavs(ComFavorito *favs, int id1, int id2) {
+    int dif_abs = abs(id1 - id2); //algoritmo para sacar el valor absoluto
+    int menor = (id1 < id2) ? id1 : id2;
 
+    int i = 0;
+    for (i = menor - 1; i <= menor + dif_abs; i++) {
+        favs[i].eliminado = true;
+    }
+
+}
 
 void borrarFavs(ComFavorito **favs, int *num_favs) {
     ComFavorito *new_favs = malloc(sizeof(ComFavorito) * MAX_FAVS);
