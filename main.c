@@ -18,7 +18,9 @@ int main(void) {
             comando[strcspn(comando, "\n")] = '\0';
 
             if (strcmp(comando, "exit") == 0) {
-                guardarFavs(favs, &num_favs);
+                if (num_favs > 0) {
+                    guardarFavs(favs, &num_favs);
+                }
                 break; // Si el comando es "exit", salir del bucle
             } 
             else if (strlen(comando) == 0) {
@@ -26,6 +28,9 @@ int main(void) {
             } 
             else if (strncmp(comando, "favs", 4) == 0)  { //Si el comando empieza con favs
                 procesarFavs(favs, &num_favs, comando);
+            }
+            else if (strncmp(comando, "set recordatorio", 16) == 0) {
+                crearRecordatorio(comando);
             }
             // ejecutar el comando
             else {

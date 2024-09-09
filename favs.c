@@ -235,7 +235,7 @@ void crearArchivoFavs(const char *ruta) {
 void guardarFavs(ComFavorito *favs, int *num_favs) {
     FILE *aux_data = fopen("shell_data.txt", "r");
     if (aux_data == NULL) {
-        fprintf(stderr, "Error: no se pudo abrir archivo\n");
+        fprintf(stderr, "Error: no se ha detectado un archivo para guardar favoritos creado\n");
         return;
     }
 

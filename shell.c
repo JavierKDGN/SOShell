@@ -92,8 +92,20 @@ void crearRecordatorio(char *comando) {
         fprintf(stderr, "Error: debe incluir un numero y un mensaje despues de set recordatorio\n");
         return;
     }
-    int segundos = atoi(args[2]);
-    const char *mensaje = args[3];
+    //3er argumento son los segundos
+    int segundos = atoi(args[2]);    
+    
+    //El resto es el recordatorio
+
+    char mensaje[MAX_ARGUMENTOS] = "";
+
+    //recorremos el resto de tokens
+    for (int i = 3; i < aux_contador; i++) {
+        strcat(mensaje,args[i]);
+        if (i < aux_contador - 1) {
+            strcat(mensaje, " "); //agregamos el espacio entre palabras
+        }
+    }
 
     //terminamos de parsear el comando
     pid_t pid = fork();
